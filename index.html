@@ -423,6 +423,23 @@ h2{margin:46px 0 16px;font-size:22px;padding-left:12px;border-left:3px solid var
 
 .term-in .run{background:rgba(159,239,0,.12);border:1px solid rgba(159,239,0,.4);color:var(--accent);border-radius:6px;padding:3px 10px;font-family:var(--mono);font-size:13px}
 .term-in .run:hover{background:var(--accent);color:#0b121f}
+
+/* ───────── flag submission ───────── */
+.subp{padding:22px}
+.subp>p{font-size:14px;max-width:70ch;margin-bottom:14px}
+.subgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:14px}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld span{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
+.fld input,.fld textarea{background:var(--solid);border:1px solid var(--border2);border-radius:8px;color:var(--bright);padding:10px 12px;font-family:var(--mono);font-size:13px;width:100%;resize:vertical}
+.fld input:focus,.fld textarea:focus{border-color:var(--accent);outline:0}
+#subst{font-size:12px}
+#subst.err{color:var(--bad)}
+.sublist{display:grid;gap:6px}
+.subrow{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--border2);border-radius:8px;padding:8px 12px;font-size:12.5px}
+.subrow.ok{border-left-color:var(--ok)}.subrow.bad{border-left-color:var(--bad)}
+.subrow code{color:var(--accent);background:none;padding:0}
+.subrow span{color:var(--dim);font-family:var(--mono);font-size:11px}
+@media(max-width:760px){.subgrid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -474,9 +491,14 @@ const BADGES = [
 
 // ───────────────────────── Saved progress (this browser only) ─────────────────────────
 const STORE = 'secplus701-ctf-v1';
-const blank = () => ({name: '', xp: 0, flags: {}, exam: 0, dom: {}, missed: [], badges: [], streak: 0, last: '', runs: 0, snd: true});
+// Flag submission: paste the instructor's Google Apps Script web app URL here
+// (it ends in /exec). Leave it empty and the submit panel says submissions are off.
+const SUBMIT_URL = '';
+const blank = () => ({name: '', xp: 0, flags: {}, exam: 0, dom: {}, missed: [], badges: [], streak: 0, last: '', runs: 0, snd: true, real: '', sent: {}});
 let S = blank();
 try { Object.assign(S, JSON.parse(localStorage.getItem(STORE)) || {}); } catch (e) { /* storage unavailable */ }
+if (!S.sent || typeof S.sent !== 'object') S.sent = {};
+let SUBDRAFT = '';
 const save = () => { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) { /* keep going in memory */ } };
 
 // ───────────────────────── Sound (tiny synth, no files) ─────────────────────────
@@ -620,7 +642,7 @@ function hud() {
   const lvl = E.level_of(S.xp), lo = E.level_floor(lvl), hi = E.level_floor(lvl + 1);
   $('#hud').innerHTML = `
     <button class="brand" data-a="home"><small>SECURITY+ SY0-701</small>SEC+ <b>CTF</b></button>
-    <nav class="nav" aria-label="Sections"><button data-a="go" data-v="machines">Machines</button><button data-a="go" data-v="labs">Labs</button><button data-a="go" data-v="challenges">Challenges</button><button data-a="go" data-v="achievements">Achievements</button><button data-a="go" data-v="arsenal">Arsenal</button></nav>
+    <nav class="nav" aria-label="Sections"><button data-a="go" data-v="machines">Machines</button><button data-a="go" data-v="labs">Labs</button><button data-a="go" data-v="submit">Submit</button><button data-a="go" data-v="challenges">Challenges</button><button data-a="go" data-v="achievements">Achievements</button><button data-a="go" data-v="arsenal">Arsenal</button></nav>
     <span class="hud-sp"></span>
     ${S.streak > 1 ? `<span class="pill fire">🔥 <b>${S.streak}</b>d</span>` : ''}
     <span class="pill">⚑ <b>${flagCount()}</b>/${TOTAL}</span>
@@ -749,6 +771,7 @@ function home() {
       <span class="cbot">${have ? `<span class="cflag">⚑ ${esc(flagText(q.id, have))}</span>` : `<span class="cpts">${CPTS[q.diff]} pts</span>`}</span></button>`;
   });
   h += '</div>';
+  h += submitPanel();
 
   const shown = PBQS.filter(i => !filt || Q[i].domain === filt);
   h += `<h2 id="challenges">PBQ challenges <small>${PBQS.filter(i => S.flags[Q[i].id]).length} of ${PBQS.length} solved</small></h2><div class="filters">
@@ -1365,7 +1388,7 @@ function debrief(animate) {
     <div class="big" style="color:${col}"><svg viewBox="0 0 190 190"><circle class="t" cx="95" cy="95" r="84"/><circle class="p" id="bigp" cx="95" cy="95" r="84" stroke="${col}" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${C.toFixed(1)}"/></svg>
     <div><b>${m.exam ? r.scaled : r.pct + '%'}</b><span>${m.exam ? 'of 900' : 'score'}</span></div></div>
     <div class="verdict ${r.pass ? 'good' : 'badv'}" data-text="${verdict}">${verdict}</div><div class="sub">${sub}</div>`;
-  if (r.pass) h += `<div class="flagbox"><span class="fl">⚑</span><code id="flagtxt">${animate ? '' : esc(r.flag)}</code><button class="ghost" data-a="copyflag">copy</button></div>`;
+  if (r.pass) h += `<div class="flagbox"><span class="fl">⚑</span><code id="flagtxt">${animate ? '' : esc(r.flag)}</code><button class="ghost" data-a="copyflag">copy</button>${m.chal && Q[m.qi].type === 'terminal' ? '<button class="ghost" data-a="subthis">submit for grading</button>' : ''}</div>`;
   if (R.levelUp) h += `<div class="levelup">▲ Level ${R.levelUp} — ${esc(RANKS[Math.min(R.levelUp, RANKS.length) - 1])}</div><br>`;
   h += `<div class="gains"><span class="pill">Points <b>+${R.xp}</b></span>${R.bonus ? `<span class="pill">Flag bonus <b>+${R.bonus}</b></span>` : ''}${m.chal ? '' : `<span class="pill">Best combo <b>x${R.maxCombo}</b></span>`}
     ${R.newBadges.map(id => { const bd = BADGES.find(x => x[0] === id); return `<span class="pill" style="border-color:#ffd700">${bd[1]} <b>${esc(bd[2])}</b> unlocked</span>`; }).join('')}</div>`;
@@ -1387,6 +1410,60 @@ function debrief(animate) {
 
 // ───────────────────────── Input ─────────────────────────
 let toastT = null;
+// ───────────────────────── Flag submission ─────────────────────────
+function labFlags() { return LABS.filter(i => S.flags[Q[i].id]).map(i => flagText(Q[i].id, S.flags[Q[i].id])); }
+function subResults() {
+  const rows = Object.entries(S.sent).sort((a, b) => b[1].at - a[1].at).slice(0, 40);
+  if (!rows.length) return '';
+  return `<div class="qlabel" style="margin-top:18px">Your submissions</div><div class="sublist">${rows.map(([f, v]) => `<div class="subrow ${v.ok === true ? 'ok' : v.ok === false ? 'bad' : ''}"><code>${esc(f)}</code><span>${v.ok === true ? '✅ accepted' : v.ok === false ? '❌ not a valid flag' : '📨 sent'}${v.lab ? ' · ' + esc(v.lab) : ''} · ${esc(new Date(v.at).toLocaleString())}</span></div>`).join('')}</div>`;
+}
+function submitPanel() {
+  const mine = labFlags(), on = !!SUBMIT_URL;
+  return `<h2 id="submit">Turn in your lab flags <small>graded by your instructor</small></h2>
+  <div class="panel subp">
+    <p>${on ? 'Solved a lab? Send its flag here and it goes straight to your instructor\'s gradebook. Use the name on the class roster so you get the credit.' : 'Flag submission is not switched on yet. Your flags are saved in this browser (type <code>flags</code> in the console to see them), so you can turn them in once your instructor opens submissions.'}</p>
+    <div class="subgrid">
+      <label class="fld"><span>Full name (as on the class roster)</span><input id="subname" maxlength="60" autocomplete="name" value="${esc(S.real || '')}"></label>
+      <label class="fld"><span>Flags, one per line</span><textarea id="subflags" rows="4" spellcheck="false" autocapitalize="off" placeholder="SEC701{...}">${esc(SUBDRAFT)}</textarea></label>
+    </div>
+    <div class="btn-row"><button class="btn" data-a="subsend"${on ? '' : ' disabled'}>Submit for grading</button><button class="ghost" data-a="subfill"${mine.length ? '' : ' disabled'}>Fill in my ${mine.length} lab flag${mine.length === 1 ? '' : 's'}</button><span class="hint" id="subst" role="status"></span></div>
+    <div id="subres">${subResults()}</div>
+  </div>`;
+}
+function subStatus(msg, err) { const st = $('#subst'); if (st) { st.textContent = msg; st.className = 'hint' + (err ? ' err' : ''); } }
+function goSubmit() { home(); const el = document.getElementById('submit'); if (el) el.scrollIntoView({block: 'start'}); }
+async function subSend(d, el) {
+  const name = ($('#subname').value || '').trim().replace(/\s+/g, ' ').slice(0, 60);
+  const flags = [...new Set(($('#subflags').value || '').split(/[\s,]+/).map(x => x.trim()).filter(Boolean))].slice(0, 20);
+  if (name.length < 2) { subStatus('Enter your full name first.', true); $('#subname').focus(); return; }
+  if (!flags.length) { subStatus('Paste at least one flag.', true); $('#subflags').focus(); return; }
+  if (flags.some(f => f.length > 80)) { subStatus('That does not look like a flag. Flags look like SEC701{...}.', true); return; }
+  S.real = name; save();
+  el.disabled = true; subStatus('Sending…');
+  const body = JSON.stringify({name, flags, handle: S.name || ''});
+  let res = null;
+  try {
+    try {
+      const r = await fetch(SUBMIT_URL, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body});
+      try { res = await r.json(); } catch (e) { res = null; }
+    } catch (e) {
+      // The grader may not allow this page to read its reply; send it blind instead.
+      await fetch(SUBMIT_URL, {method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body});
+    }
+  } catch (err) {
+    el.disabled = false; sfx('bad');
+    return subStatus('Could not reach the grader. Check your internet connection and try again.', true);
+  }
+  if (res && res.ok === false) { el.disabled = false; sfx('bad'); return subStatus('Not accepted: ' + String(res.error || 'unknown error'), true); }
+  const at = Date.now(), list = res && Array.isArray(res.results) ? res.results : [];
+  flags.forEach(f => { const r = list.find(x => x && x.flag === f); S.sent[f] = {ok: r ? !!r.ok : null, lab: r && r.lab ? String(r.lab).slice(0, 40) : '', at}; });
+  save(); SUBDRAFT = '';
+  const good = list.filter(x => x && x.ok).length;
+  sfx(list.length && good === list.length ? 'flag' : list.length && !good ? 'bad' : 'ok');
+  goSubmit();
+  subStatus(list.length ? `Received: ${good} of ${list.length} accepted.` : 'Sent to your instructor.');
+}
+
 function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 1600); }
 function copy(text, done) {
   try { navigator.clipboard.writeText(text).then(() => toast(done), () => toast('Copy blocked: select the text instead')); } catch (e) { toast('Copy blocked: select the text instead'); }
@@ -1408,6 +1485,9 @@ const ACT = {
   review: d => { R.review = true; R.i = +d.v; renderQ(); scrollTo(0, 0); },
   snd: () => { S.snd = !S.snd; save(); hud(); sfx('ok'); },
   copyflag: () => copy(R.result.flag, 'Flag copied'),
+  subthis: () => { const f = R.result.flag; if (!SUBDRAFT.split('\n').includes(f)) SUBDRAFT = (SUBDRAFT ? SUBDRAFT + '\n' : '') + f; goSubmit(); const t = $('#subflags'); if (t) t.focus({preventScroll: true}); },
+  subfill: () => { const t = $('#subflags'); SUBDRAFT = labFlags().join('\n'); if (t) t.value = SUBDRAFT; subStatus(''); },
+  subsend: subSend,
   card: () => { const lvl = E.level_of(S.xp); copy(`SEC+ 701 CTF | ${S.name || 'anonymous'} | ${S.xp} pts | L${lvl} ${RANKS[Math.min(lvl, RANKS.length) - 1]} | flags ${flagCount()}/${TOTAL} | rooted ${RUNS.filter(r => r.kind === 'root' && S.flags[r.id]).length}/5 | boss ${S.exam || '-'}`, 'Scorecard copied'); },
   pick: d => { const u = cur(); if (!u || u.done) return; u.pick = +d.v; renderQ(); },
   mpick: d => { const u = cur(); if (!u || u.done) return; u.pick[+d.q] = +d.v; renderQ(); },
@@ -1443,6 +1523,10 @@ document.addEventListener('change', e => {
     if (t.value === '') delete u.vals[t.dataset.k]; else u.vals[t.dataset.k] = +t.value;
     const go = $('#go'); if (go && !R.m.exam) go.disabled = !answered(Q[R.qs[R.i]], u);
   }
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'subflags') SUBDRAFT = e.target.value;
+  if (e.target.id === 'subname') { S.real = e.target.value.trim().slice(0, 60); save(); }
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && e.target.id === 'cin') { e.preventDefault(); return runCon(e.target.value); }
