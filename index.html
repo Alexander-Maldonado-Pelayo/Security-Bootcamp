@@ -452,6 +452,18 @@ h2{margin:46px 0 16px;font-size:22px;padding-left:12px;border-left:3px solid var
 .subrow code{color:var(--accent);background:none;padding:0}
 .subrow span{color:var(--dim);font-family:var(--mono);font-size:11px}
 @media(max-width:760px){.subgrid{grid-template-columns:1fr}}
+.grade{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px 26px;align-items:center;margin:4px 0 20px;padding:18px;border:1px solid var(--border2);border-radius:12px;background:var(--surface2)}
+.gscore{text-align:center;min-width:120px}
+.gscore b{display:block;font-family:var(--mono);font-size:40px;line-height:1;color:var(--bright)}
+.gscore b small{font-size:18px;color:var(--dim)}
+.gscore span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-top:6px}
+.gscore .bar{margin-top:10px}
+.glabs{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px 14px;font-size:13px}
+.glab{display:flex;gap:8px;align-items:baseline}
+.glab em{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-left:auto;white-space:nowrap}
+.glab.ok em{color:var(--ok)}.glab.cap em{color:var(--warn)}.glab.wait em{color:#7fb7ff}
+.gnote{grid-column:1/-1;font-size:12px;color:var(--dim);border-top:1px solid var(--border);padding-top:10px}
+@media(max-width:560px){.grade{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -1424,6 +1436,23 @@ function debrief(animate) {
 let toastT = null;
 // ───────────────────────── Flag submission ─────────────────────────
 function labFlags() { return LABS.filter(i => S.flags[Q[i].id]).map(i => flagText(Q[i].id, S.flags[Q[i].id])); }
+function gradeCard() {
+  const rows = LABS.map(i => {
+    const q = Q[i], key = q.id.replace(/^term-/, '');
+    const sent = Object.entries(S.sent).filter(([f]) => new RegExp('^SEC701\\{' + key + '_', 'i').test(f)).map(([, v]) => v);
+    const st = sent.some(v => v.ok === true) ? 'ok' : sent.some(v => v.ok === null) ? 'wait' : S.flags[q.id] ? 'cap' : 'todo';
+    return {name: q.name, st};
+  });
+  const got = rows.filter(r => r.st === 'ok').length, cap = rows.filter(r => r.st === 'cap').length, wait = rows.filter(r => r.st === 'wait').length;
+  const label = {ok: '✅ graded: correct', wait: '📨 sent', cap: '⚑ solved, not turned in', todo: '· not solved yet'};
+  let note = got === LABS.length ? 'All 8 labs turned in and accepted. Nice work.'
+    : cap ? `You solved ${cap} lab${cap === 1 ? '' : 's'} you haven't turned in yet. Click "Fill in my lab flags", then "Submit for grading".`
+    : 'Solve a lab, then turn its flag in here to get credit.';
+  if (wait) note += ' "Sent" means your instructor received it but this page could not show the result.';
+  return `<div class="grade"><div class="gscore"><b>${got}<small> / ${LABS.length}</small></b><span>labs graded correct</span><div class="bar"><i style="width:${Math.round(got / LABS.length * 100)}%"></i></div></div>
+    <div class="glabs">${rows.map(r => `<div class="glab ${r.st}"><span>${esc(r.name)}</span><em>${label[r.st]}</em></div>`).join('')}</div>
+    <div class="gnote">${esc(note)} This is what you've turned in from this browser; your instructor's gradebook is the official grade.</div></div>`;
+}
 function subResults() {
   const rows = Object.entries(S.sent).sort((a, b) => b[1].at - a[1].at).slice(0, 40);
   if (!rows.length) return '';
@@ -1434,6 +1463,7 @@ function submitPanel() {
   return `<h2 id="submit">Turn in your lab flags <small>graded by your instructor</small></h2>
   <div class="panel subp">
     <p>${on ? 'Solved a lab? Send its flag here and it goes straight to your instructor\'s gradebook. Use the name on the class roster so you get the credit.' : 'Flag submission is not switched on yet. Your flags are saved in this browser (type <code>flags</code> in the console to see them), so you can turn them in once your instructor opens submissions.'}</p>
+    ${gradeCard()}
     <div class="subgrid">
       <label class="fld"><span>Full name (as on the class roster)</span><input id="subname" maxlength="60" autocomplete="name" value="${esc(S.real || '')}"></label>
       <label class="fld"><span>Flags, one per line</span><textarea id="subflags" rows="4" spellcheck="false" autocapitalize="off" placeholder="SEC701{...}">${esc(SUBDRAFT)}</textarea></label>
@@ -1473,7 +1503,8 @@ async function subSend(d, el) {
   const good = list.filter(x => x && x.ok).length;
   sfx(list.length && good === list.length ? 'flag' : list.length && !good ? 'bad' : 'ok');
   goSubmit();
-  subStatus(list.length ? `Received: ${good} of ${list.length} accepted.` : 'Sent to your instructor.');
+  const total = LABS.filter(i => Object.entries(S.sent).some(([f, v]) => v.ok === true && f.toLowerCase().startsWith('sec701{' + Q[i].id.replace(/^term-/, '') + '_'))).length;
+  subStatus(list.length ? `Received: ${good} of ${list.length} accepted. Your grade is now ${total} / ${LABS.length}.` : 'Sent to your instructor.');
 }
 
 function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 1600); }
