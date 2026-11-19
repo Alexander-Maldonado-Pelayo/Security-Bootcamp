@@ -5,20 +5,20 @@
  * in the "Submissions" tab marked correct or wrong, and the "Gradebook" tab is
  * rebuilt with one row per student and a score out of 8.
  *
- * The ANSWER_KEY below is intentionally EMPTY in the public repository.
- * Your instructor copy has the real flags filled in. Never commit it.
+ * INSTRUCTOR COPY: the ANSWER_KEY below holds the real flags.
+ * Keep it private. Do not commit it to the public repository.
  */
 
 const ANSWER_KEY = {
   // lab id      flag
-  recon:     '',
-  integrity: '',
-  phish:     '',
-  ssh:       '',
-  harden:    '',
-  webshell:  '',
-  risk:      '',
-  dns:       '',
+  recon:     'SEC701{recon_14a68443}',
+  integrity: 'SEC701{integrity_ae1a66f5}',
+  phish:     'SEC701{phish_ea6a8487}',
+  ssh:       'SEC701{ssh_78e29eba}',
+  harden:    'SEC701{harden_52a014cd}',
+  webshell:  'SEC701{webshell_76308e39}',
+  risk:      'SEC701{risk_e097d93b}',
+  dns:       'SEC701{dns_ca57ae78}',
 };
 
 const LAB_NAMES = {
