@@ -477,6 +477,7 @@ h2{margin:46px 0 16px;font-size:22px;padding-left:12px;border-left:3px solid var
 .glabs{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px 14px;font-size:13px}
 .glab{display:flex;gap:8px;align-items:baseline}
 .glab em{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-left:auto;white-space:nowrap}
+.glab.queue em{color:var(--accent4)}
 .glab.ok em{color:var(--ok)}.glab.cap em{color:var(--warn)}.glab.wait em{color:#7fb7ff}
 .gnote{grid-column:1/-1;font-size:12px;color:var(--dim);border-top:1px solid var(--border);padding-top:10px}
 @media(max-width:560px){.grade{grid-template-columns:1fr}}
@@ -917,7 +918,7 @@ const STORE = 'secplus701-ctf-v1';
 // Flag submission: paste the instructor's Google Apps Script web app URL here
 // (it ends in /exec). Leave it empty and the submit panel says submissions are off.
 const SUBMIT_URL = '';
-const blank = () => ({name: '', xp: 0, flags: {}, exam: 0, dom: {}, missed: [], badges: [], streak: 0, last: '', runs: 0, snd: true, real: '', sent: {}});
+const blank = () => ({name: '', xp: 0, flags: {}, exam: 0, dom: {}, missed: [], badges: [], streak: 0, last: '', runs: 0, snd: true, real: '', sent: {}, queue: []});
 let S = blank();
 try { Object.assign(S, JSON.parse(localStorage.getItem(STORE)) || {}); } catch (e) { /* storage unavailable */ }
 if (!S.sent || typeof S.sent !== 'object') S.sent = {};
@@ -967,6 +968,7 @@ async function boot() {
   }
   startNet();
   home();
+  flushQueue();
 }
 
 // ───────────────────────── Background (simulated in C++, drawn here) ─────────────────────────
@@ -1861,18 +1863,24 @@ function debrief(animate) {
 let toastT = null;
 // ───────────────────────── Flag submission ─────────────────────────
 function labFlags() { return LABS.filter(i => S.flags[Q[i].id]).map(i => flagText(Q[i].id, S.flags[Q[i].id])); }
+const LAB_KEYS = () => LABS.map(i => Q[i].id.replace(/^term-/, ''));
+const flagLab = f => { const m = /^SEC701\{([a-z0-9-]+)_[0-9a-f]{8}\}$/i.exec(f); return m ? m[1].toLowerCase() : null; };
+const labName = key => { const i = LABS.find(j => Q[j].id === 'term-' + key); return i === undefined ? '' : Q[i].name; };
+if (!Array.isArray(S.queue)) S.queue = [];
 function gradeCard() {
   const rows = LABS.map(i => {
     const q = Q[i], key = q.id.replace(/^term-/, '');
-    const sent = Object.entries(S.sent).filter(([f]) => new RegExp('^SEC701\\{' + key + '_', 'i').test(f)).map(([, v]) => v);
-    const st = sent.some(v => v.ok === true) ? 'ok' : sent.some(v => v.ok === null) ? 'wait' : S.flags[q.id] ? 'cap' : 'todo';
+    const sent = Object.entries(S.sent).filter(([f]) => flagLab(f) === key).map(([, v]) => v);
+    const st = sent.some(v => v.ok === true) ? 'ok' : sent.some(v => v.queued) ? 'queue' : sent.some(v => v.ok === null) ? 'wait' : S.flags[q.id] ? 'cap' : 'todo';
     return {name: q.name, st};
   });
-  const got = rows.filter(r => r.st === 'ok').length, cap = rows.filter(r => r.st === 'cap').length, wait = rows.filter(r => r.st === 'wait').length;
-  const label = {ok: '✅ graded: correct', wait: '📨 sent', cap: '⚑ solved, not turned in', todo: '· not solved yet'};
+  const got = rows.filter(r => r.st === 'ok').length, cap = rows.filter(r => r.st === 'cap').length;
+  const wait = rows.filter(r => r.st === 'wait').length, queued = rows.filter(r => r.st === 'queue').length;
+  const label = {ok: '✅ graded: correct', wait: '📨 sent', queue: '🕓 queued', cap: '⚑ solved, not turned in', todo: '· not solved yet'};
   let note = got === LABS.length ? 'All 8 labs turned in and accepted. Nice work.'
     : cap ? `You solved ${cap} lab${cap === 1 ? '' : 's'} you haven't turned in yet. Click "Fill in my lab flags", then "Submit for grading".`
     : 'Solve a lab, then turn its flag in here to get credit.';
+  if (queued) note += ' "Queued" means it is saved here and will be sent automatically as soon as your instructor switches grading on.';
   if (wait) note += ' "Sent" means your instructor received it but this page could not show the result.';
   return `<div class="grade"><div class="gscore"><b>${got}<small> / ${LABS.length}</small></b><span>labs graded correct</span><div class="bar"><i style="width:${Math.round(got / LABS.length * 100)}%"></i></div></div>
     <div class="glabs">${rows.map(r => `<div class="glab ${r.st}"><span>${esc(r.name)}</span><em>${label[r.st]}</em></div>`).join('')}</div>
@@ -1881,55 +1889,90 @@ function gradeCard() {
 function subResults() {
   const rows = Object.entries(S.sent).sort((a, b) => b[1].at - a[1].at).slice(0, 40);
   if (!rows.length) return '';
-  return `<div class="qlabel" style="margin-top:18px">Your submissions</div><div class="sublist">${rows.map(([f, v]) => `<div class="subrow ${v.ok === true ? 'ok' : v.ok === false ? 'bad' : ''}"><code>${esc(f)}</code><span>${v.ok === true ? '✅ accepted' : v.ok === false ? '❌ not a valid flag' : '📨 sent'}${v.lab ? ' · ' + esc(v.lab) : ''} · ${esc(new Date(v.at).toLocaleString())}</span></div>`).join('')}</div>`;
+  const tag = v => v.ok === true ? '✅ accepted' : v.ok === false ? '❌ not a valid flag' : v.queued ? '🕓 queued, sends when grading opens' : '📨 sent';
+  return `<div class="qlabel" style="margin-top:18px">Your submissions</div><div class="sublist">${rows.map(([f, v]) => `<div class="subrow ${v.ok === true ? 'ok' : v.ok === false ? 'bad' : ''}"><code>${esc(f)}</code><span>${tag(v)}${v.lab ? ' · ' + esc(v.lab) : ''} · ${esc(new Date(v.at).toLocaleString())}</span></div>`).join('')}</div>`;
 }
 function submitPanel() {
   const mine = labFlags(), on = !!SUBMIT_URL;
   return `<h2 id="submit">Turn in your lab flags <small>graded by your instructor</small></h2>
   <div class="panel subp">
-    <p>${on ? 'Solved a lab? Send its flag here and it goes straight to your instructor\'s gradebook. Use the name on the class roster so you get the credit.' : 'Flag submission is not switched on yet. Your flags are saved in this browser (type <code>flags</code> in the console to see them), so you can turn them in once your instructor opens submissions.'}</p>
+    <p>${on ? 'Solved a lab? Send its flag here and it goes straight to your instructor\'s gradebook. Use the name on the class roster so you get the credit.' : 'Solved a lab? Submit its flag here. Grading isn\'t switched on yet, so your submission is saved in this browser and <strong>sent automatically</strong> the next time you open this page after your instructor turns grading on. Use the name on the class roster.'} Only the 8 command-line lab flags count toward this grade.</p>
     ${gradeCard()}
     <div class="subgrid">
       <label class="fld"><span>Full name (as on the class roster)</span><input id="subname" maxlength="60" autocomplete="name" value="${esc(S.real || '')}"></label>
       <label class="fld"><span>Flags, one per line</span><textarea id="subflags" rows="4" spellcheck="false" autocapitalize="off" placeholder="SEC701{...}">${esc(SUBDRAFT)}</textarea></label>
     </div>
-    <div class="btn-row"><button class="btn" data-a="subsend"${on ? '' : ' disabled'}>Submit for grading</button><button class="ghost" data-a="subfill"${mine.length ? '' : ' disabled'}>Fill in my ${mine.length} lab flag${mine.length === 1 ? '' : 's'}</button><span class="hint" id="subst" role="status"></span></div>
+    <div class="btn-row"><button class="btn" data-a="subsend">Submit for grading</button><button class="ghost" data-a="subfill"${mine.length ? '' : ' disabled'}>Fill in my ${mine.length} lab flag${mine.length === 1 ? '' : 's'}</button><button class="ghost" data-a="subcopy"${Object.keys(S.sent).length ? '' : ' disabled'}>Copy receipt</button><span class="hint" id="subst" role="status"></span></div>
     <div id="subres">${subResults()}</div>
   </div>`;
 }
 function subStatus(msg, err) { const st = $('#subst'); if (st) { st.textContent = msg; st.className = 'hint' + (err ? ' err' : ''); } }
 function goSubmit() { home(); const el = document.getElementById('submit'); if (el) el.scrollIntoView({block: 'start'}); }
-async function subSend(d, el) {
-  const name = ($('#subname').value || '').trim().replace(/\s+/g, ' ').slice(0, 60);
-  const flags = [...new Set(($('#subflags').value || '').split(/[\s,]+/).map(x => x.trim()).filter(Boolean))].slice(0, 20);
-  if (name.length < 2) { subStatus('Enter your full name first.', true); $('#subname').focus(); return; }
-  if (!flags.length) { subStatus('Paste at least one flag.', true); $('#subflags').focus(); return; }
-  if (flags.some(f => f.length > 80)) { subStatus('That does not look like a flag. Flags look like SEC701{...}.', true); return; }
-  S.real = name; save();
-  el.disabled = true; subStatus('Sending…');
+async function postGrader(name, flags) {
   const body = JSON.stringify({name, flags, handle: S.name || ''});
   let res = null;
   try {
-    try {
-      const r = await fetch(SUBMIT_URL, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body});
-      try { res = await r.json(); } catch (e) { res = null; }
-    } catch (e) {
-      // The grader may not allow this page to read its reply; send it blind instead.
-      await fetch(SUBMIT_URL, {method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body});
-    }
-  } catch (err) {
-    el.disabled = false; sfx('bad');
-    return subStatus('Could not reach the grader. Check your internet connection and try again.', true);
+    const r = await fetch(SUBMIT_URL, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body});
+    try { res = await r.json(); } catch (e) { res = null; }
+  } catch (e) {
+    // The grader may not allow this page to read its reply; send it blind instead (throws if offline).
+    await fetch(SUBMIT_URL, {method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body});
   }
-  if (res && res.ok === false) { el.disabled = false; sfx('bad'); return subStatus('Not accepted: ' + String(res.error || 'unknown error'), true); }
-  const at = Date.now(), list = res && Array.isArray(res.results) ? res.results : [];
-  flags.forEach(f => { const r = list.find(x => x && x.flag === f); S.sent[f] = {ok: r ? !!r.ok : null, lab: r && r.lab ? String(r.lab).slice(0, 40) : '', at}; });
+  if (res && res.ok === false) throw new Error(String(res.error || 'rejected'));
+  return res && Array.isArray(res.results) ? res.results : [];
+}
+function recordResults(flags, list, at) {
+  flags.forEach(f => { const r = list.find(x => x && x.flag === f); S.sent[f] = {ok: r ? !!r.ok : null, lab: (r && r.lab) ? String(r.lab).slice(0, 40) : labName(flagLab(f)), at}; });
+}
+async function flushQueue() {
+  if (!SUBMIT_URL || !S.queue.length) return;
+  const pending = S.queue.slice();
+  for (const item of pending) {
+    try {
+      const list = await postGrader(item.name, item.flags);
+      recordResults(item.flags, list, Date.now());
+      S.queue = S.queue.filter(x => x !== item); save();
+    } catch (e) { break; }   // offline or grader down: keep the rest queued for next time
+  }
+  if (!R) { const y = scrollY; home(); scrollTo(0, y); }
+  if (!S.queue.length) toast('Queued flags sent to your instructor');
+}
+async function subSend(d, el) {
+  const name = ($('#subname').value || '').trim().replace(/\s+/g, ' ').slice(0, 60);
+  const all = [...new Set(($('#subflags').value || '').split(/[\s,]+/).map(x => x.trim()).filter(Boolean))].slice(0, 20);
+  if (name.length < 2) { subStatus('Enter your full name first.', true); $('#subname').focus(); return; }
+  if (!all.length) { subStatus('Paste at least one flag.', true); $('#subflags').focus(); return; }
+  const bad = all.filter(f => !flagLab(f)), labs = LAB_KEYS();
+  if (bad.length) { subStatus(`"${bad[0].slice(0, 30)}" doesn't look like a flag. Flags look like SEC701{name_1a2b3c4d}.`, true); return; }
+  const other = all.filter(f => !labs.includes(flagLab(f))), flags = all.filter(f => labs.includes(flagLab(f)));
+  if (!flags.length) { subStatus('Those are PBQ or machine flags. Only the 8 command-line lab flags are graded here.', true); return; }
+  S.real = name; save();
+  const at = Date.now(), skipped = other.length ? ` (${other.length} PBQ/machine flag${other.length === 1 ? '' : 's'} skipped: only lab flags are graded)` : '';
+  if (!SUBMIT_URL) {
+    S.queue.push({name, flags, at});
+    flags.forEach(f => { S.sent[f] = {ok: null, queued: true, lab: labName(flagLab(f)), at}; });
+    save(); SUBDRAFT = ''; sfx('ok'); goSubmit();
+    return subStatus(`Saved ${flags.length} flag${flags.length === 1 ? '' : 's'}. They'll be sent automatically when grading opens${skipped}.`);
+  }
+  el.disabled = true; subStatus('Sending…');
+  let list;
+  try { list = await postGrader(name, flags); }
+  catch (err) {
+    el.disabled = false; sfx('bad');
+    return subStatus(err instanceof TypeError ? 'Could not reach the grader. Check your internet connection and try again.' : 'Not accepted: ' + err.message, true);
+  }
+  recordResults(flags, list, at);
   save(); SUBDRAFT = '';
   const good = list.filter(x => x && x.ok).length;
   sfx(list.length && good === list.length ? 'flag' : list.length && !good ? 'bad' : 'ok');
   goSubmit();
-  const total = LABS.filter(i => Object.entries(S.sent).some(([f, v]) => v.ok === true && f.toLowerCase().startsWith('sec701{' + Q[i].id.replace(/^term-/, '') + '_'))).length;
-  subStatus(list.length ? `Received: ${good} of ${list.length} accepted. Your grade is now ${total} / ${LABS.length}.` : 'Sent to your instructor.');
+  const total = LABS.filter(i => Object.entries(S.sent).some(([f, v]) => v.ok === true && flagLab(f) === Q[i].id.replace(/^term-/, ''))).length;
+  subStatus((list.length ? `Received: ${good} of ${list.length} accepted. Your grade is now ${total} / ${LABS.length}.` : 'Sent to your instructor.') + skipped);
+}
+function subReceipt() {
+  const rows = Object.entries(S.sent).sort((a, b) => a[1].at - b[1].at);
+  return `SEC+ 701 CTF lab flags\nName: ${S.real || '(no name)'}\nCopied: ${new Date().toLocaleString()}\n` +
+    rows.map(([f, v]) => `${f}  ${v.lab || ''}  ${v.ok === true ? 'accepted' : v.ok === false ? 'not valid' : v.queued ? 'queued' : 'sent'}  ${new Date(v.at).toLocaleString()}`).join('\n');
 }
 
 // ───────────────────────── Reference panel ─────────────────────────
@@ -2024,6 +2067,7 @@ const ACT = {
   subthis: () => { const f = R.result.flag; if (!SUBDRAFT.split('\n').includes(f)) SUBDRAFT = (SUBDRAFT ? SUBDRAFT + '\n' : '') + f; goSubmit(); const t = $('#subflags'); if (t) t.focus({preventScroll: true}); },
   subfill: () => { const t = $('#subflags'); SUBDRAFT = labFlags().join('\n'); if (t) t.value = SUBDRAFT; subStatus(''); },
   subsend: subSend,
+  subcopy: () => copy(subReceipt(), 'Receipt copied: paste it to your instructor'),
   reftab: d => { REF.tab = d.v; REF.q = ''; REF.cat = ''; REF.card = null; refRerender('#tab-' + d.v); },
   refcat: d => { REF.cat = d.v; refRerender(); },
   refquiz: () => {
