@@ -11,14 +11,14 @@
 
 const ANSWER_KEY = {
   // lab id      flag
-  recon:     'SEC701{recon_14a68443}',
-  integrity: 'SEC701{integrity_ae1a66f5}',
-  phish:     'SEC701{phish_ea6a8487}',
-  ssh:       'SEC701{ssh_78e29eba}',
-  harden:    'SEC701{harden_52a014cd}',
-  webshell:  'SEC701{webshell_76308e39}',
-  risk:      'SEC701{risk_e097d93b}',
-  dns:       'SEC701{dns_ca57ae78}',
+  recon:     '',
+  integrity: '',
+  phish:     '',
+  ssh:       '',
+  harden:    '',
+  webshell:  '',
+  risk:      '',
+  dns:       '',
 };
 
 const LAB_NAMES = {

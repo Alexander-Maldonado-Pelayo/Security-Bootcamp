@@ -1041,7 +1041,11 @@ RUNS.forEach(r => { r.title = `${r.box.name} · ${r.kind} flag`; });
 const chalRun = qi => ({id: Q[qi].id, chal: true, qi, pts: CPTS[Q[qi].diff], title: Q[qi].name, pick: () => [qi]});
 const TOTAL = CHALS.length + RUNS.length;
 const flagCount = () => Object.keys(S.flags).length;
-const flagText = (id, v) => `SEC701{${id.replace(/^(pbq|term)-/, '')}_${hex(v)}}`;
+// Flag v2: the engine's raw value mixed with a rotation salt. Change FLAG_SALT to
+// issue a fresh set of flags (e.g. if an answer key ever leaks), then rebuild the key.
+const FLAG_SALT = 0x45bbd49f;
+const flagMix = (id, v) => { let h = (v ^ FLAG_SALT) >>> 0; for (const ch of id) h = Math.imul(h ^ ch.charCodeAt(0), 0x01000193) >>> 0; h ^= h >>> 16; h = Math.imul(h, 0x85ebca6b) >>> 0; h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35) >>> 0; return (h ^ (h >>> 16)) >>> 0; };
+const flagText = (id, v) => `SEC701{${id.replace(/^(pbq|term)-/, '')}_${hex(flagMix(id, v))}}`;
 
 // ───────────────────────── HUD + home ─────────────────────────
 let filt = 0;
