@@ -416,7 +416,7 @@ h2{margin:46px 0 16px;font-size:22px;padding-left:12px;border-left:3px solid var
 .tbn{text-align:right;color:var(--accent4)}
 @keyframes flow{to{stroke-dashoffset:-12}}
 @keyframes grow{from{width:0}}
-@media(max-width:900px){.hero,.labtop,.mast{grid-template-columns:1fr}}
+@media(max-width:900px){.hero,.labtop,.mast{grid-template-columns:minmax(0,1fr)}}
 .xpbox{min-width:140px;flex:0 1 190px}
 .nav button{padding:7px 8px}
 .hud{gap:10px}
@@ -452,6 +452,51 @@ h2{margin:46px 0 16px;font-size:22px;padding-left:12px;border-left:3px solid var
 .subrow code{color:var(--accent);background:none;padding:0}
 .subrow span{color:var(--dim);font-family:var(--mono);font-size:11px}
 @media(max-width:760px){.subgrid{grid-template-columns:1fr}}
+.grade{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px 26px;align-items:center;margin:4px 0 20px;padding:18px;border:1px solid var(--border2);border-radius:12px;background:var(--surface2)}
+.gscore{text-align:center;min-width:120px}
+.gscore b{display:block;font-family:var(--mono);font-size:40px;line-height:1;color:var(--bright)}
+.gscore b small{font-size:18px;color:var(--dim)}
+.gscore span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-top:6px}
+.gscore .bar{margin-top:10px}
+.glabs{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px 14px;font-size:13px}
+.glab{display:flex;gap:8px;align-items:baseline}
+.glab em{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-left:auto;white-space:nowrap}
+.glab.ok em{color:var(--ok)}.glab.cap em{color:var(--warn)}.glab.wait em{color:#7fb7ff}
+.gnote{grid-column:1/-1;font-size:12px;color:var(--dim);border-top:1px solid var(--border);padding-top:10px}
+@media(max-width:560px){.grade{grid-template-columns:1fr}}
+/* ───────── reference: ports & acronyms ───────── */
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.refp{padding:20px}
+.reftabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.reftabs [role=tab]{font-family:var(--mono);font-size:12px;padding:8px 14px;border-radius:20px;border:1px solid var(--border2);background:var(--surface2);color:var(--text)}
+.reftabs [role=tab][aria-selected=true]{background:var(--accent);border-color:var(--accent);color:#0b121f;font-weight:700}
+.reftools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.reftools input{flex:1 1 240px;min-width:0;background:var(--solid);border:1px solid var(--border2);border-radius:8px;color:var(--bright);padding:10px 12px;font-family:var(--mono);font-size:13px}
+.reftools input:focus{border-color:var(--accent);outline:0}
+.refcount{font-family:var(--mono);font-size:11px;color:var(--dim)}
+.refscroll{max-height:540px;overflow:auto;border:1px solid var(--border);border-radius:10px;background:var(--surface2)}
+.ptable{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+.ptable th{position:sticky;top:0;background:var(--solid);text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);padding:9px 10px;border-bottom:2px solid var(--border2)}
+.ptable td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.45}
+.ptable td:first-child{font-family:var(--mono);font-weight:700;color:var(--accent4);white-space:nowrap}
+.ptable td:nth-child(2){font-family:var(--mono);font-size:11px;color:var(--dim);white-space:nowrap}
+.ptable td:nth-child(3){color:var(--bright);font-weight:700}
+.ptable .sec{color:#a5ffd6;font-size:12px}
+.ptable tr:hover td{background:rgba(159,239,0,.04)}
+.ctag{display:inline-block;margin-left:6px;font-family:var(--mono);font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:1px 6px;border-radius:4px;color:var(--bad);border:1px solid rgba(255,61,87,.45);vertical-align:middle;font-weight:400}
+.alist{margin:0;padding:4px 0}
+.arow{display:grid;grid-template-columns:110px minmax(0,1fr);gap:4px 14px;padding:8px 14px;border-bottom:1px solid var(--border)}
+.arow dt{font-family:var(--mono);font-weight:700;color:var(--accent4);word-break:break-word}
+.arow dd{margin:0;color:var(--bright);font-size:13.5px}
+.arow dd small{display:block;color:var(--dim);font-size:12px;margin-top:2px}
+.refempty{padding:18px;color:var(--dim);font-size:13px}
+.flash{margin-bottom:14px;padding:18px;border:1px dashed var(--accent);border-radius:12px;background:rgba(159,239,0,.05);text-align:center}
+.flash .fq{font-size:13px;color:var(--dim);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase}
+.flash .fbig{font-family:var(--mono);font-size:30px;font-weight:700;color:var(--bright);margin:6px 0}
+.flash .fa{color:#a5ffd6;font-size:15px;min-height:1.5em;margin-bottom:10px}
+.flash .fa small{display:block;color:var(--dim);font-size:12.5px;margin-top:4px}
+.flash .btn-row{justify-content:center;margin-top:8px}
+@media(max-width:560px){.arow{grid-template-columns:1fr}.flash .fbig{font-size:24px}}
 </style>
 </head>
 <body>
@@ -500,6 +545,356 @@ const BADGES = [
   ['streak', '⚡', 'Three-Day Streak', 'Play three days in a row'],
   ['boss', '🏆', 'Boss Slayer', 'Beat the mock exam with 750+'],
 ];
+
+// ───────────────────────── Reference: ports & acronyms ─────────────────────────
+// [port, transport, service, what it is for, secure option / note, category, cleartext-or-legacy]
+const PORTS = [
+  ['20-21', 'TCP', 'FTP', 'File transfer: 21 control, 20 data. Sends logins in cleartext.', 'Use SFTP (22) or FTPS (989/990)', 'Files', 1],
+  ['22', 'TCP', 'SSH / SCP / SFTP', 'Encrypted remote shell and file transfer.', 'The secure replacement for Telnet and FTP', 'Remote access', 0],
+  ['23', 'TCP', 'Telnet', 'Remote shell in cleartext.', 'Use SSH (22)', 'Remote access', 1],
+  ['25', 'TCP', 'SMTP', 'Email relay between mail servers.', 'Use STARTTLS; clients send on 587', 'Email', 1],
+  ['49', 'TCP', 'TACACS+', 'AAA for network device admins. Encrypts the whole payload.', 'Cisco; separates authentication, authorization and accounting', 'Auth & directory', 0],
+  ['53', 'TCP/UDP', 'DNS', 'Name resolution. UDP for queries, TCP for zone transfers and large replies.', 'DNSSEC signs records; DoT (853) or DoH (443) encrypt queries', 'Network services', 1],
+  ['67-68', 'UDP', 'DHCP', 'Automatic IP addressing: 67 server, 68 client.', 'DHCP snooping blocks rogue DHCP servers', 'Network services', 0],
+  ['69', 'UDP', 'TFTP', 'Trivial file transfer with no authentication.', 'Keep off untrusted networks; use SFTP', 'Files', 1],
+  ['80', 'TCP', 'HTTP', 'Web traffic in cleartext.', 'Use HTTPS (443) with HSTS', 'Web', 1],
+  ['88', 'TCP/UDP', 'Kerberos', 'Ticket-based authentication in Active Directory.', 'Needs accurate time (NTP)', 'Auth & directory', 0],
+  ['110', 'TCP', 'POP3', 'Downloads email in cleartext.', 'Use POP3S (995)', 'Email', 1],
+  ['123', 'UDP', 'NTP', 'Clock sync. Log timelines and Kerberos depend on it.', 'NTS adds authentication', 'Network services', 0],
+  ['135', 'TCP', 'Microsoft RPC', 'Windows remote procedure call endpoint mapper.', 'Block at the perimeter', 'Windows', 0],
+  ['137-139', 'TCP/UDP', 'NetBIOS', 'Legacy Windows name and session services.', 'Disable it and block at the perimeter', 'Windows', 1],
+  ['143', 'TCP', 'IMAP', 'Reads email on the server, in cleartext.', 'Use IMAPS (993)', 'Email', 1],
+  ['161-162', 'UDP', 'SNMP', 'Device monitoring: 161 queries, 162 traps. v1/v2c send community strings in cleartext.', 'Use SNMPv3 (authentication + encryption)', 'Monitoring', 1],
+  ['389', 'TCP/UDP', 'LDAP', 'Directory lookups in cleartext.', 'Use LDAPS (636) or StartTLS', 'Auth & directory', 1],
+  ['443', 'TCP', 'HTTPS', 'Web traffic over TLS. Also used by DoH and many VPNs.', '', 'Web', 0],
+  ['445', 'TCP', 'SMB', 'Windows file and printer sharing.', 'Never expose to the internet; disable SMBv1', 'Windows', 0],
+  ['465', 'TCP', 'SMTPS', 'SMTP over implicit TLS.', '', 'Email', 0],
+  ['500', 'UDP', 'IKE / ISAKMP', 'Negotiates IPsec VPN keys.', '', 'VPN', 0],
+  ['514', 'UDP', 'Syslog', 'Sends logs to a collector, in cleartext.', 'Use syslog over TLS (6514)', 'Monitoring', 1],
+  ['587', 'TCP', 'SMTP submission', 'Email clients send mail here, with login and STARTTLS.', '', 'Email', 0],
+  ['636', 'TCP', 'LDAPS', 'LDAP over TLS.', '', 'Auth & directory', 0],
+  ['853', 'TCP', 'DNS over TLS (DoT)', 'Encrypted DNS queries.', '', 'Network services', 0],
+  ['989-990', 'TCP', 'FTPS', 'FTP over TLS.', '', 'Files', 0],
+  ['993', 'TCP', 'IMAPS', 'IMAP over TLS.', '', 'Email', 0],
+  ['995', 'TCP', 'POP3S', 'POP3 over TLS.', '', 'Email', 0],
+  ['1433', 'TCP', 'Microsoft SQL Server', 'Database server.', 'Allow only from app servers', 'Databases', 0],
+  ['1521', 'TCP', 'Oracle database', 'Oracle listener.', 'Allow only from app servers', 'Databases', 0],
+  ['1701', 'UDP', 'L2TP', 'Layer 2 tunnel, normally paired with IPsec for encryption.', '', 'VPN', 0],
+  ['1723', 'TCP', 'PPTP', 'Old VPN with broken encryption.', 'Use IPsec or a TLS VPN', 'VPN', 1],
+  ['1812-1813', 'UDP', 'RADIUS', 'AAA for Wi-Fi 802.1X and VPNs: 1812 auth, 1813 accounting.', 'Only the password is encrypted (TACACS+ encrypts everything)', 'Auth & directory', 0],
+  ['3306', 'TCP', 'MySQL / MariaDB', 'Database server.', 'Bind to localhost or firewall it', 'Databases', 0],
+  ['3389', 'TCP/UDP', 'RDP', 'Windows Remote Desktop.', 'Put it behind a VPN or gateway and require MFA', 'Remote access', 0],
+  ['4500', 'UDP', 'IPsec NAT-T', 'Carries IPsec through NAT devices.', '', 'VPN', 0],
+  ['5060-5061', 'TCP/UDP', 'SIP', 'VoIP call setup: 5060 cleartext, 5061 over TLS.', 'Use 5061, and SRTP for the audio', 'Voice', 0],
+  ['5432', 'TCP', 'PostgreSQL', 'Database server.', 'Allow only from app servers', 'Databases', 0],
+  ['5900', 'TCP', 'VNC', 'Remote desktop, often with weak passwords.', 'Tunnel it through SSH or a VPN', 'Remote access', 1],
+  ['5985-5986', 'TCP', 'WinRM', 'Windows remote management: 5985 HTTP, 5986 HTTPS.', 'Use 5986', 'Remote access', 0],
+  ['6514', 'TCP', 'Syslog over TLS', 'Encrypted log forwarding.', '', 'Monitoring', 0],
+  ['8080', 'TCP', 'HTTP alternate', 'Proxies, admin panels and dev servers.', 'Easy to forget: scan for it', 'Web', 1],
+];
+const PORT_CATS = [...new Set(PORTS.map(p => p[5]))];
+
+// "ACRONYM|meaning|optional exam tip", one per line
+const ACRO_RAW = `AAA|Authentication, Authorization and Accounting|Prove who you are, decide what you can do, record what you did.
+ACL|Access Control List|An ordered list of allow/deny rules; most end with an implicit deny.
+AES|Advanced Encryption Standard|Symmetric block cipher; the default choice for bulk encryption.
+AH|Authentication Header|IPsec: integrity and authentication, no encryption.
+AI|Artificial Intelligence
+ALE|Annualized Loss Expectancy|ALE = SLE × ARO.
+AP|Access Point
+API|Application Programming Interface
+APT|Advanced Persistent Threat|Well-funded, patient attacker (often a nation-state) that stays hidden for a long time.
+ARO|Annualized Rate of Occurrence|How many times a year a loss is expected.
+ARP|Address Resolution Protocol|Maps IP to MAC on a LAN; ARP poisoning puts an attacker on-path.
+ASLR|Address Space Layout Randomization|Randomizes memory locations to make exploits harder.
+ATT&CK|Adversarial Tactics, Techniques and Common Knowledge|MITRE's catalog of attacker behavior.
+AUP|Acceptable Use Policy
+AV|Antivirus
+BCP|Business Continuity Planning|Keep the business running during a disruption.
+BEC|Business Email Compromise|Impersonating an executive or vendor to get money moved.
+BGP|Border Gateway Protocol
+BIA|Business Impact Analysis|Finds critical functions and sets RTO/RPO.
+BIOS|Basic Input/Output System
+BPA|Business Partners Agreement
+BPDU|Bridge Protocol Data Unit|BPDU guard stops rogue switches from changing the spanning tree.
+BYOD|Bring Your Own Device
+CA|Certificate Authority|Signs certificates so others can trust them.
+CAPTCHA|Completely Automated Public Turing test to tell Computers and Humans Apart
+CAR|Corrective Action Report
+CASB|Cloud Access Security Broker|Visibility and policy enforcement between users and cloud apps.
+CBC|Cipher Block Chaining
+CCMP|Counter Mode/CBC-MAC Protocol|WPA2's AES-based encryption.
+CCTV|Closed-Circuit Television
+CERT|Computer Emergency Response Team
+CHAP|Challenge-Handshake Authentication Protocol
+CIA|Confidentiality, Integrity, Availability|The core goals of security.
+CIO|Chief Information Officer
+CIRT|Computer Incident Response Team
+CISO|Chief Information Security Officer
+CMS|Content Management System
+COOP|Continuity of Operation Planning
+COPE|Corporate Owned, Personally Enabled
+CP|Contingency Planning
+CRC|Cyclical Redundancy Check
+CRL|Certificate Revocation List|A published list of revoked certificates. Compare OCSP.
+CSO|Chief Security Officer
+CSP|Cloud Service Provider
+CSR|Certificate Signing Request|What you send a CA to get a certificate.
+CSRF|Cross-Site Request Forgery|Tricks a logged-in browser into sending a request. Fix: anti-CSRF tokens.
+CTM|Counter Mode
+CTO|Chief Technology Officer
+CVE|Common Vulnerabilities and Exposures|A unique ID for a known vulnerability.
+CVSS|Common Vulnerability Scoring System|Severity score from 0 to 10.
+CYOD|Choose Your Own Device
+DAC|Discretionary Access Control|The owner decides who gets access.
+DBA|Database Administrator
+DDoS|Distributed Denial of Service
+DEP|Data Execution Prevention|Stops code from running in data-only memory.
+DES|Data Encryption Standard|Old 56-bit cipher; broken.
+DHCP|Dynamic Host Configuration Protocol
+DHE|Diffie-Hellman Ephemeral|Provides perfect forward secrecy.
+DKIM|DomainKeys Identified Mail|Signs email so receivers can check it wasn't altered.
+DLL|Dynamic Link Library
+DLP|Data Loss Prevention|Detects and blocks sensitive data leaving.
+DMARC|Domain-based Message Authentication, Reporting and Conformance|Tells receivers what to do when SPF/DKIM fail.
+DMZ|Demilitarized Zone|Screened subnet for internet-facing servers.
+DNAT|Destination Network Address Translation
+DNS|Domain Name System
+DNSSEC|Domain Name System Security Extensions|Signs DNS records to stop spoofing; does not encrypt.
+DoS|Denial of Service
+DPO|Data Privacy Officer
+DRP|Disaster Recovery Plan|Restore IT after a disaster.
+DSA|Digital Signature Algorithm
+DSL|Digital Subscriber Line
+EAP|Extensible Authentication Protocol|Framework used by 802.1X.
+ECB|Electronic Code Book|Weak block mode: identical blocks give identical output.
+ECC|Elliptic Curve Cryptography|Strong security with short keys; good for mobile and IoT.
+ECDHE|Elliptic Curve Diffie-Hellman Ephemeral
+ECDSA|Elliptic Curve Digital Signature Algorithm
+EDR|Endpoint Detection and Response|Records endpoint activity and responds to threats.
+EFS|Encrypted File System
+ERP|Enterprise Resource Planning
+ESN|Electronic Serial Number
+ESP|Encapsulating Security Payload|IPsec: encryption plus integrity.
+FAR|False Acceptance Rate|Biometrics: an impostor gets in.
+FDE|Full Disk Encryption
+FIM|File Integrity Monitoring|Alerts when important files change.
+FPGA|Field Programmable Gate Array
+FRR|False Rejection Rate|Biometrics: a valid user is refused.
+FTP|File Transfer Protocol
+FTPS|File Transfer Protocol Secure|FTP over TLS.
+GCM|Galois/Counter Mode|AES mode with encryption and integrity in one.
+GDPR|General Data Protection Regulation|EU privacy law.
+GPG|GNU Privacy Guard
+GPO|Group Policy Object
+GPS|Global Positioning System
+GPU|Graphics Processing Unit
+GRE|Generic Routing Encapsulation
+HA|High Availability
+HDD|Hard Disk Drive
+HIDS|Host-based Intrusion Detection System
+HIPS|Host-based Intrusion Prevention System
+HMAC|Hashed Message Authentication Code|A hash with a secret key: integrity plus authenticity.
+HOTP|HMAC-based One-Time Password|Counter-based one-time code.
+HSM|Hardware Security Module|Tamper-resistant device that stores and uses keys.
+HTML|Hypertext Markup Language
+HTTP|Hypertext Transfer Protocol
+HTTPS|Hypertext Transfer Protocol Secure
+HVAC|Heating, Ventilation and Air Conditioning
+IaaS|Infrastructure as a Service|Customer manages the OS and up.
+IaC|Infrastructure as Code
+IAM|Identity and Access Management
+ICMP|Internet Control Message Protocol
+ICS|Industrial Control Systems
+IDEA|International Data Encryption Algorithm
+IDF|Intermediate Distribution Frame
+IdP|Identity Provider|Authenticates users for SSO/SAML.
+IDS|Intrusion Detection System|Detects and alerts; does not block.
+IEEE|Institute of Electrical and Electronics Engineers
+IKE|Internet Key Exchange|Sets up IPsec keys (UDP 500).
+IoC|Indicator of Compromise|Evidence of an attack: hashes, IPs, domains.
+IoT|Internet of Things
+IP|Internet Protocol
+IPS|Intrusion Prevention System|Inline; can block traffic.
+IPsec|Internet Protocol Security
+IR|Incident Response
+IRP|Incident Response Plan
+ISO|International Organization for Standardization
+ISP|Internet Service Provider
+ISSO|Information Systems Security Officer
+IV|Initialization Vector
+KDC|Key Distribution Center|Kerberos ticket server.
+KEK|Key Encryption Key
+L2TP|Layer 2 Tunneling Protocol
+LAN|Local Area Network
+LDAP|Lightweight Directory Access Protocol
+LEAP|Lightweight Extensible Authentication Protocol
+MaaS|Monitoring as a Service
+MAC|Mandatory Access Control / Media Access Control / Message Authentication Code|Three meanings: read the question's context.
+MAN|Metropolitan Area Network
+MBR|Master Boot Record
+MD5|Message Digest 5|Old hash with known collisions.
+MDF|Main Distribution Frame
+MDM|Mobile Device Management
+MFA|Multifactor Authentication|Two or more different factor types: know, have, are.
+MFD|Multifunction Device
+ML|Machine Learning
+MOA|Memorandum of Agreement
+MOU|Memorandum of Understanding|Informal agreement of intent; usually not binding.
+MPLS|Multiprotocol Label Switching
+MSA|Master Service Agreement|Sets the general terms; SOWs add specific work.
+MSP|Managed Service Provider
+MSSP|Managed Security Service Provider
+MTBF|Mean Time Between Failures|Reliability: higher is better.
+MTTF|Mean Time to Failure|For parts that are replaced, not repaired.
+MTTR|Mean Time to Repair/Recover|How long a fix takes: lower is better.
+MTU|Maximum Transmission Unit
+NAC|Network Access Control|Checks devices before letting them on the network.
+NAT|Network Address Translation
+NDA|Non-disclosure Agreement
+NFC|Near Field Communication
+NGFW|Next-generation Firewall|Application-aware firewall with IPS features.
+NIDS|Network-based Intrusion Detection System
+NIPS|Network-based Intrusion Prevention System
+NIST|National Institute of Standards and Technology
+NTFS|New Technology File System
+NTLM|New Technology LAN Manager|Old Windows auth; open to pass-the-hash.
+NTP|Network Time Protocol
+OCSP|Online Certificate Status Protocol|Real-time certificate revocation check. Stapling makes it faster.
+OID|Object Identifier
+OS|Operating System
+OSINT|Open-source Intelligence|Information gathered from public sources.
+OSPF|Open Shortest Path First
+OT|Operational Technology
+OTA|Over the Air
+OVAL|Open Vulnerability Assessment Language
+P2P|Peer to Peer
+PaaS|Platform as a Service|Provider runs the OS; you deploy code.
+PAC|Proxy Auto Configuration
+PAM|Privileged Access Management / Pluggable Authentication Modules|PAM (privileged): vaulting, just-in-time admin rights.
+PAP|Password Authentication Protocol|Sends passwords in cleartext.
+PAT|Port Address Translation
+PBKDF2|Password-Based Key Derivation Function 2|Key stretching for passwords.
+PBX|Private Branch Exchange
+PCAP|Packet Capture
+PCI DSS|Payment Card Industry Data Security Standard
+PDP|Policy Decision Point|Zero trust: decides whether to grant access.
+PDU|Power Distribution Unit
+PEAP|Protected Extensible Authentication Protocol
+PEM|Privacy Enhanced Mail|Base64 certificate format (-----BEGIN CERTIFICATE-----).
+PEP|Policy Enforcement Point|Zero trust: enforces the PDP's decision.
+PFS|Perfect Forward Secrecy|A stolen long-term key can't decrypt past sessions.
+PGP|Pretty Good Privacy
+PHI|Protected Health Information
+PII|Personally Identifiable Information
+PIV|Personal Identity Verification
+PKCS|Public Key Cryptography Standards
+PKI|Public Key Infrastructure
+POP|Post Office Protocol
+PPTP|Point-to-Point Tunneling Protocol
+PSK|Pre-shared Key
+PTZ|Pan-Tilt-Zoom
+PUP|Potentially Unwanted Program
+RA|Registration Authority / Recovery Agent
+RAD|Rapid Application Development
+RADIUS|Remote Authentication Dial-In User Service|AAA over UDP 1812/1813.
+RAID|Redundant Array of Inexpensive Disks|RAID 1 mirrors, 5 uses parity, 0 stripes with no redundancy.
+RAS|Remote Access Server
+RAT|Remote Access Trojan
+RBAC|Role-Based Access Control / Rule-Based Access Control
+RC4|Rivest Cipher 4|Old stream cipher; broken.
+RDP|Remote Desktop Protocol
+RFID|Radio Frequency Identification
+RIPEMD|RACE Integrity Primitives Evaluation Message Digest
+ROI|Return on Investment
+RPO|Recovery Point Objective|Maximum acceptable data loss, measured in time.
+RSA|Rivest, Shamir and Adleman|Asymmetric algorithm for encryption and signatures.
+RTBH|Remotely Triggered Black Hole
+RTO|Recovery Time Objective|Maximum acceptable downtime.
+RTOS|Real-Time Operating System
+RTP|Real-time Transport Protocol
+S/MIME|Secure/Multipurpose Internet Mail Extensions|Signs and encrypts email with certificates.
+SaaS|Software as a Service|Provider manages almost everything.
+SAE|Simultaneous Authentication of Equals|WPA3's replacement for PSK; resists offline cracking.
+SAML|Security Assertion Markup Language|XML-based SSO between an IdP and a service.
+SAN|Storage Area Network / Subject Alternative Name|On a certificate, SAN lists extra hostnames.
+SASE|Secure Access Service Edge|Cloud-delivered networking plus security.
+SBOM|Software Bill of Materials|List of components inside software.
+SCADA|Supervisory Control and Data Acquisition
+SCAP|Security Content Automation Protocol
+SCEP|Simple Certificate Enrollment Protocol
+SD-WAN|Software-Defined Wide Area Network
+SDK|Software Development Kit
+SDLC|Software Development Lifecycle
+SDN|Software-Defined Networking|Separates the control plane from the data plane.
+SED|Self-Encrypting Drive
+SEH|Structured Exception Handler
+SELinux|Security-Enhanced Linux|Mandatory access control for Linux.
+SFTP|SSH File Transfer Protocol|File transfer over SSH (port 22).
+SHA|Secure Hash Algorithm
+SIEM|Security Information and Event Management|Collects and correlates logs; raises alerts.
+SIM|Subscriber Identity Module
+SLA|Service-Level Agreement|Measurable promises such as uptime.
+SLE|Single Loss Expectancy|SLE = asset value × exposure factor.
+SMS|Short Message Service
+SMTP|Simple Mail Transfer Protocol
+SNMP|Simple Network Management Protocol
+SOAP|Simple Object Access Protocol
+SOAR|Security Orchestration, Automation and Response|Runs playbooks automatically.
+SoC|System on Chip
+SOC|Security Operations Center
+SOW|Statement of Work
+SPF|Sender Policy Framework|DNS list of servers allowed to send a domain's mail.
+SPIM|Spam over Instant Messaging
+SQL|Structured Query Language
+SQLi|SQL Injection|Fix: parameterized queries.
+SRTP|Secure Real-time Transport Protocol
+SSD|Solid State Drive
+SSH|Secure Shell
+SSL|Secure Sockets Layer|Deprecated; replaced by TLS.
+SSO|Single Sign-On
+STIX|Structured Threat Information eXpression|Format for threat intel. TAXII transports it.
+SWG|Secure Web Gateway
+TACACS+|Terminal Access Controller Access-Control System Plus|AAA over TCP 49; encrypts the full payload.
+TAXII|Trusted Automated eXchange of Indicator Information|Transports STIX threat intel.
+TCP|Transmission Control Protocol
+TGT|Ticket Granting Ticket|Kerberos.
+TKIP|Temporal Key Integrity Protocol|WPA1; deprecated.
+TLS|Transport Layer Security
+TOCTOU|Time-of-Check to Time-of-Use|A race condition between checking and using.
+TOTP|Time-based One-Time Password|Authenticator app codes.
+TPM|Trusted Platform Module|Chip on the motherboard for keys and secure boot.
+TTP|Tactics, Techniques and Procedures|How an attacker operates.
+UAT|User Acceptance Testing
+UAV|Unmanned Aerial Vehicle
+UDP|User Datagram Protocol
+UEFI|Unified Extensible Firmware Interface|Modern BIOS; supports Secure Boot.
+UEM|Unified Endpoint Management
+UPS|Uninterruptible Power Supply|Battery bridge for short outages.
+URL|Uniform Resource Locator
+USB|Universal Serial Bus
+UTM|Unified Threat Management|Many security functions in one appliance.
+UTP|Unshielded Twisted Pair
+VDI|Virtual Desktop Infrastructure
+VLAN|Virtual Local Area Network|Logical segmentation at layer 2.
+VM|Virtual Machine
+VoIP|Voice over IP
+VPC|Virtual Private Cloud
+VPN|Virtual Private Network
+WAF|Web Application Firewall|Filters HTTP: SQLi, XSS and more.
+WAP|Wireless Access Point
+WEP|Wired Equivalent Privacy|Broken Wi-Fi encryption.
+WIDS|Wireless Intrusion Detection System
+WIPS|Wireless Intrusion Prevention System
+WPA|Wi-Fi Protected Access|WPA3 is current; WPA2 is still common.
+WPS|Wi-Fi Protected Setup|PIN can be brute-forced; disable it.
+XDR|Extended Detection and Response|EDR plus network, cloud and email data.
+XML|Extensible Markup Language
+XOR|Exclusive Or
+XSRF|Cross-Site Request Forgery|Same as CSRF.
+XSS|Cross-Site Scripting|Injected script runs in other users' browsers. Fix: output encoding.
+ZTNA|Zero Trust Network Access|Per-app access after checking identity and device.`;
+const ACROS = ACRO_RAW.split('\n').map(l => l.split('|'));
 
 // ───────────────────────── Saved progress (this browser only) ─────────────────────────
 const STORE = 'secplus701-ctf-v1';
@@ -654,7 +1049,7 @@ function hud() {
   const lvl = E.level_of(S.xp), lo = E.level_floor(lvl), hi = E.level_floor(lvl + 1);
   $('#hud').innerHTML = `
     <button class="brand" data-a="home"><small>SECURITY+ SY0-701</small>SEC+ <b>CTF</b></button>
-    <nav class="nav" aria-label="Sections"><button data-a="go" data-v="machines">Machines</button><button data-a="go" data-v="labs">Labs</button><button data-a="go" data-v="submit">Submit</button><button data-a="go" data-v="challenges">Challenges</button><button data-a="go" data-v="achievements">Achievements</button><button data-a="go" data-v="arsenal">Arsenal</button></nav>
+    <nav class="nav" aria-label="Sections"><button data-a="go" data-v="machines">Machines</button><button data-a="go" data-v="labs">Labs</button><button data-a="go" data-v="submit">Submit</button><button data-a="go" data-v="challenges">Challenges</button><button data-a="go" data-v="reference">Ports & Acronyms</button><button data-a="go" data-v="achievements">Achievements</button><button data-a="go" data-v="arsenal">Arsenal</button></nav>
     <span class="hud-sp"></span>
     ${S.streak > 1 ? `<span class="pill fire">🔥 <b>${S.streak}</b>d</span>` : ''}
     <span class="pill">⚑ <b>${flagCount()}</b>/${TOTAL}</span>
@@ -698,7 +1093,7 @@ function con(raw) {
   const a = line.split(/\s+/), c = a[0].toLowerCase(), arg = (a[1] || '').toLowerCase();
   const mark = id => (S.flags[id] ? '[x]' : '[ ]');
   switch (c) {
-    case 'help': return say('sys', 'machines            list the five machines and your flags\nattack <name> [user|root]   e.g. attack foundation\nlabs                list command-line labs      lab <n>    open one\nchallenges          list PBQ challenges         solve <n>  open one\nstatus              points, rank, mastery       flags      flags you hold\nwhoami <handle>     set your name               sound on|off\nclear');
+    case 'help': return say('sys', 'machines            list the five machines and your flags\nattack <name> [user|root]   e.g. attack foundation\nlabs                list command-line labs      lab <n>    open one\nchallenges          list PBQ challenges         solve <n>  open one\nstatus              points, rank, mastery       flags      flags you hold\nport <n|name>       look up a port               whatis <acronym>  expand one\nwhoami <handle>     set your name               sound on|off\nclear');
     case 'ls': case 'machines': return say('', BOXES.map(b => { const [u, r] = runs(b); return `${b.name.padEnd(11)} day ${b.n}  ${b.diff.padEnd(7)} user ${mark(u.id)}  root ${mark(r.id)}`; }).join('\n'));
     case 'labs': return say('', LABS.map((i, n) => `${String(n + 1).padStart(2)}. ${mark(Q[i].id)} ${Q[i].name.padEnd(26)} ${DIFF[Q[i].diff].padEnd(7)} ${CPTS[Q[i].diff]} pts`).join('\n'));
     case 'challenges': return say('', PBQS.map((i, n) => `${String(n + 1).padStart(2)}. ${mark(Q[i].id)} ${Q[i].name.slice(0, 44).padEnd(45)} ${DIFF[Q[i].diff]}`).join('\n'));
@@ -713,6 +1108,18 @@ function con(raw) {
     case 'status': { const lvl = E.level_of(S.xp); return say('', `handle   ${S.name || 'anonymous'}\nrank     L${lvl} ${RANKS[Math.min(lvl, RANKS.length) - 1]}\npoints   ${S.xp}\nflags    ${flagCount()}/${TOTAL}\nboss     ${S.exam || '-'}\n` + [1, 2, 3, 4, 5].map(d => `${d}.0 ${SHORT[d].padEnd(13)} ${domPct(d) === null ? '-' : '#'.repeat(Math.round(domPct(d) / 5)).padEnd(20, '.') + ' ' + domPct(d) + '%'}`).join('\n')); }
     case 'flags': return say(flagCount() ? 'ok' : '', Object.keys(S.flags).map(id => flagText(id, S.flags[id])).join('\n') || 'No flags yet. Try: attack foundation');
     case 'whoami': if (a[1]) { S.name = a.slice(1).join(' ').slice(0, 20); save(); hud(); } return say('', S.name || 'anonymous (set one with: whoami <handle>)');
+    case 'port': case 'ports': {
+      if (!arg) return say('', 'usage: port <number|service>   e.g. port 3389, port ldap\nFull table: the Ports & Acronyms section below.');
+      const hits = lookupPort(arg);
+      if (!hits.length) return say('err', `port ${arg}: not in the reference. Try: port 443`);
+      return say('', hits.map(p => `${p[0].padEnd(10)} ${p[1].padEnd(8)} ${p[2]}${p[6] ? '  [insecure]' : ''}\n           ${p[3]}${p[4] ? '\n           -> ' + p[4] : ''}`).join('\n'));
+    }
+    case 'whatis': case 'acronym': {
+      if (!arg) return say('', 'usage: whatis <acronym>   e.g. whatis soar');
+      const hit = ACROS.filter(x => x[0].toLowerCase() === arg || x[0].toLowerCase().replace(/[^a-z0-9]/g, '') === arg.replace(/[^a-z0-9]/g, ''));
+      if (!hit.length) return say('err', `${a[1]}: not in the acronym list. Search the Ports & Acronyms section.`);
+      return say('', hit.map(x => `${x[0]} = ${x[1]}${x[2] ? '\n  ' + x[2] : ''}`).join('\n'));
+    }
     case 'sound': S.snd = arg !== 'off'; save(); hud(); return say('', 'sound ' + (S.snd ? 'on' : 'off'));
     case 'clear': CON = []; return;
     case 'sudo': return say('err', 'Nice try. Flags are earned.');
@@ -797,6 +1204,8 @@ function home() {
       <span class="cbot">${have ? `<span class="cflag">⚑ ${esc(flagText(q.id, have))}</span>` : `<span class="cpts">${CPTS[q.diff]} pts</span>`}</span></button>`;
   }
   h += '</div>';
+
+  h += refPanel();
 
   h += `<h2 id="mastery">Mastery <small>how you are doing in each exam domain</small></h2><section class="panel mast"><div class="radar">${radar()}</div><div class="mbars">
     ${[1, 2, 3, 4, 5].map(d => { const v = domPct(d); return `<div class="dbar" style="--c:${DCOL[d]}"><span>${d}.0 ${esc(DOM[d])} · ${WEIGHT[d]}% of exam</span><b>${v === null ? '–' : v + '%'}</b><div class="bar"><i style="width:${v || 0}%"></i></div></div>`; }).join('')}</div></section>`;
@@ -1424,6 +1833,23 @@ function debrief(animate) {
 let toastT = null;
 // ───────────────────────── Flag submission ─────────────────────────
 function labFlags() { return LABS.filter(i => S.flags[Q[i].id]).map(i => flagText(Q[i].id, S.flags[Q[i].id])); }
+function gradeCard() {
+  const rows = LABS.map(i => {
+    const q = Q[i], key = q.id.replace(/^term-/, '');
+    const sent = Object.entries(S.sent).filter(([f]) => new RegExp('^SEC701\\{' + key + '_', 'i').test(f)).map(([, v]) => v);
+    const st = sent.some(v => v.ok === true) ? 'ok' : sent.some(v => v.ok === null) ? 'wait' : S.flags[q.id] ? 'cap' : 'todo';
+    return {name: q.name, st};
+  });
+  const got = rows.filter(r => r.st === 'ok').length, cap = rows.filter(r => r.st === 'cap').length, wait = rows.filter(r => r.st === 'wait').length;
+  const label = {ok: '✅ graded: correct', wait: '📨 sent', cap: '⚑ solved, not turned in', todo: '· not solved yet'};
+  let note = got === LABS.length ? 'All 8 labs turned in and accepted. Nice work.'
+    : cap ? `You solved ${cap} lab${cap === 1 ? '' : 's'} you haven't turned in yet. Click "Fill in my lab flags", then "Submit for grading".`
+    : 'Solve a lab, then turn its flag in here to get credit.';
+  if (wait) note += ' "Sent" means your instructor received it but this page could not show the result.';
+  return `<div class="grade"><div class="gscore"><b>${got}<small> / ${LABS.length}</small></b><span>labs graded correct</span><div class="bar"><i style="width:${Math.round(got / LABS.length * 100)}%"></i></div></div>
+    <div class="glabs">${rows.map(r => `<div class="glab ${r.st}"><span>${esc(r.name)}</span><em>${label[r.st]}</em></div>`).join('')}</div>
+    <div class="gnote">${esc(note)} This is what you've turned in from this browser; your instructor's gradebook is the official grade.</div></div>`;
+}
 function subResults() {
   const rows = Object.entries(S.sent).sort((a, b) => b[1].at - a[1].at).slice(0, 40);
   if (!rows.length) return '';
@@ -1434,6 +1860,7 @@ function submitPanel() {
   return `<h2 id="submit">Turn in your lab flags <small>graded by your instructor</small></h2>
   <div class="panel subp">
     <p>${on ? 'Solved a lab? Send its flag here and it goes straight to your instructor\'s gradebook. Use the name on the class roster so you get the credit.' : 'Flag submission is not switched on yet. Your flags are saved in this browser (type <code>flags</code> in the console to see them), so you can turn them in once your instructor opens submissions.'}</p>
+    ${gradeCard()}
     <div class="subgrid">
       <label class="fld"><span>Full name (as on the class roster)</span><input id="subname" maxlength="60" autocomplete="name" value="${esc(S.real || '')}"></label>
       <label class="fld"><span>Flags, one per line</span><textarea id="subflags" rows="4" spellcheck="false" autocapitalize="off" placeholder="SEC701{...}">${esc(SUBDRAFT)}</textarea></label>
@@ -1473,7 +1900,76 @@ async function subSend(d, el) {
   const good = list.filter(x => x && x.ok).length;
   sfx(list.length && good === list.length ? 'flag' : list.length && !good ? 'bad' : 'ok');
   goSubmit();
-  subStatus(list.length ? `Received: ${good} of ${list.length} accepted.` : 'Sent to your instructor.');
+  const total = LABS.filter(i => Object.entries(S.sent).some(([f, v]) => v.ok === true && f.toLowerCase().startsWith('sec701{' + Q[i].id.replace(/^term-/, '') + '_'))).length;
+  subStatus(list.length ? `Received: ${good} of ${list.length} accepted. Your grade is now ${total} / ${LABS.length}.` : 'Sent to your instructor.');
+}
+
+// ───────────────────────── Reference panel ─────────────────────────
+const REF = {tab: 'ports', q: '', cat: '', card: null};
+function refMatches() {
+  const q = REF.q.trim().toLowerCase();
+  if (REF.tab === 'ports') {
+    return PORTS.filter(p => (!REF.cat || p[5] === REF.cat) && (!q || p.slice(0, 5).join(' ').toLowerCase().includes(q) || p[0].split('-').some(n => n === q) || (/^\d+$/.test(q) && p[0].includes('-') && +q >= +p[0].split('-')[0] && +q <= +p[0].split('-')[1])));
+  }
+  return ACROS.filter(a => !q || a[0].toLowerCase().includes(q) || a[1].toLowerCase().includes(q));
+}
+function refBody() {
+  const list = refMatches(), noun = REF.tab === 'ports' ? 'port' : 'acronym';
+  const count = `<span class="refcount" id="refcount" aria-live="polite">${list.length} ${noun}${list.length === 1 ? '' : 's'}</span>`;
+  if (!list.length) return {count, html: `<div class="refempty">No ${noun}s match "${esc(REF.q)}".</div>`};
+  if (REF.tab === 'ports') {
+    return {count, html: `<table class="ptable"><caption class="sr">Common ports for Security+</caption><thead><tr><th scope="col">Port</th><th scope="col">Proto</th><th scope="col">Service</th><th scope="col">What it's for</th><th scope="col">Secure option / note</th></tr></thead><tbody>${list.map(p => `<tr><td>${esc(p[0])}</td><td>${esc(p[1])}</td><td>${esc(p[2])}${p[6] ? '<span class="ctag">insecure</span>' : ''}</td><td>${esc(p[3])}</td><td class="sec">${esc(p[4])}</td></tr>`).join('')}</tbody></table>`};
+  }
+  return {count, html: `<dl class="alist">${list.map(a => `<div class="arow"><dt>${esc(a[0])}</dt><dd>${esc(a[1])}${a[2] ? `<small>${esc(a[2])}</small>` : ''}</dd></div>`).join('')}</dl>`};
+}
+function refCard() {
+  const c = REF.card;
+  if (!c) return '';
+  let q, big, ans, note = '';
+  if (c.kind === 'ports') {
+    const p = PORTS[c.i];
+    if (c.dir) { q = 'Which port?'; big = p[2]; ans = `${p[0]} ${p[1]}`; }
+    else { q = 'Which service uses'; big = `${p[0]}/${p[1]}`; ans = p[2]; }
+    note = p[3] + (p[4] ? ' ' + p[4] + '.' : '');
+  } else {
+    const a = ACROS[c.i];
+    q = 'What does this stand for?'; big = a[0]; ans = a[1]; note = a[2] || '';
+  }
+  return `<div class="flash" role="region" aria-label="Flashcard"><div class="fq">${esc(q)}</div><div class="fbig">${esc(big)}</div>
+    <div class="fa" aria-live="polite">${c.shown ? `${esc(ans)}${note ? `<small>${esc(note)}</small>` : ''}` : ''}</div>
+    <div class="btn-row">${c.shown ? '' : '<button class="btn" data-a="refshow">Show answer</button>'}<button class="ghost" data-a="refquiz">${c.shown ? 'Next card' : 'Skip'}</button><button class="ghost" data-a="refstop">Done</button></div></div>`;
+}
+function refPanel() {
+  const b = refBody(), ports = REF.tab === 'ports';
+  return `<h2 id="reference">Ports & Acronyms <small>Security+ quick reference · ${PORTS.length} ports · ${ACROS.length} acronyms</small></h2>
+  <section class="panel refp">
+    <div class="reftabs" role="tablist" aria-label="Reference type">
+      <button role="tab" id="tab-ports" aria-selected="${ports}" aria-controls="refbox" data-a="reftab" data-v="ports">🔌 Ports</button>
+      <button role="tab" id="tab-acros" aria-selected="${!ports}" aria-controls="refbox" data-a="reftab" data-v="acros">🔤 Acronyms</button>
+    </div>
+    <div id="refcard">${refCard()}</div>
+    <div class="reftools">
+      <label class="sr" for="refq">Search ${ports ? 'ports' : 'acronyms'}</label>
+      <input id="refq" type="search" value="${esc(REF.q)}" placeholder="${ports ? 'Search a port, service or protocol (e.g. 443, ldap, vpn)' : 'Search an acronym or meaning (e.g. SOAR, recovery)'}" autocomplete="off" spellcheck="false">
+      <button class="btn" data-a="refquiz">🃏 Quiz me</button>
+      ${b.count}
+    </div>
+    ${ports ? `<div class="filters" role="group" aria-label="Port category"><button class="fchip${REF.cat ? '' : ' on'}" aria-pressed="${!REF.cat}" data-a="refcat" data-v="">All</button>${PORT_CATS.map(c => `<button class="fchip${REF.cat === c ? ' on' : ''}" aria-pressed="${REF.cat === c}" data-a="refcat" data-v="${esc(c)}">${esc(c)}</button>`).join('')}</div>` : ''}
+    <div class="refscroll" id="refbox" role="tabpanel" aria-labelledby="${ports ? 'tab-ports' : 'tab-acros'}" tabindex="0">${b.html}</div>
+    ${ports ? '<p class="note">Ports tagged <span class="ctag">insecure</span> send data in cleartext or use broken crypto. On the exam, pick the secure option.</p>' : '<p class="note">Based on the CompTIA SY0-701 acronym list. Some acronyms have more than one meaning: read the question for context.</p>'}
+  </section>`;
+}
+function refRefresh() {
+  const b = refBody(), box = $('#refbox'), cnt = $('#refcount');
+  if (box) { box.innerHTML = b.html; box.scrollTop = 0; }
+  if (cnt) cnt.outerHTML = b.count;
+}
+function refRerender(focusSel) { const y = scrollY; home(); scrollTo(0, y); if (focusSel) { const el = $(focusSel); if (el) el.focus({preventScroll: true}); } }
+function refDraw() { const el = $('#refcard'); if (el) el.innerHTML = refCard(); }
+function lookupPort(arg) {
+  const q = String(arg || '').toLowerCase();
+  if (!q) return null;
+  return PORTS.filter(p => p[0].split('-').includes(q) || (/^\d+$/.test(q) && p[0].includes('-') && +q >= +p[0].split('-')[0] && +q <= +p[0].split('-')[1]) || p[2].toLowerCase().split(/[\s/]+/).includes(q));
 }
 
 function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 1600); }
@@ -1500,6 +1996,17 @@ const ACT = {
   subthis: () => { const f = R.result.flag; if (!SUBDRAFT.split('\n').includes(f)) SUBDRAFT = (SUBDRAFT ? SUBDRAFT + '\n' : '') + f; goSubmit(); const t = $('#subflags'); if (t) t.focus({preventScroll: true}); },
   subfill: () => { const t = $('#subflags'); SUBDRAFT = labFlags().join('\n'); if (t) t.value = SUBDRAFT; subStatus(''); },
   subsend: subSend,
+  reftab: d => { REF.tab = d.v; REF.q = ''; REF.cat = ''; REF.card = null; refRerender('#tab-' + d.v); },
+  refcat: d => { REF.cat = d.v; refRerender(); },
+  refquiz: () => {
+    const kind = REF.tab, n = kind === 'ports' ? PORTS.length : ACROS.length;
+    let i = Math.floor(Math.random() * n);
+    if (REF.card && REF.card.kind === kind && REF.card.i === i) i = (i + 1) % n;
+    REF.card = {kind, i, dir: Math.random() < 0.5, shown: false};
+    refDraw(); const b = $('#refcard [data-a=refshow]'); if (b) b.focus({preventScroll: true});
+  },
+  refshow: () => { if (REF.card) { REF.card.shown = true; refDraw(); const b = $('#refcard [data-a=refquiz]'); if (b) b.focus({preventScroll: true}); } },
+  refstop: () => { REF.card = null; refDraw(); },
   tsub: d => taskSubmit(+d.v),
   card: () => { const lvl = E.level_of(S.xp); copy(`SEC+ 701 CTF | ${S.name || 'anonymous'} | ${S.xp} pts | L${lvl} ${RANKS[Math.min(lvl, RANKS.length) - 1]} | flags ${flagCount()}/${TOTAL} | rooted ${RUNS.filter(r => r.kind === 'root' && S.flags[r.id]).length}/5 | boss ${S.exam || '-'}`, 'Scorecard copied'); },
   pick: d => { const u = cur(); if (!u || u.done) return; u.pick = +d.v; renderQ(); },
@@ -1550,6 +2057,7 @@ document.addEventListener('change', e => {
 });
 document.addEventListener('input', e => {
   if (e.target.id === 'subflags') SUBDRAFT = e.target.value;
+  if (e.target.id === 'refq') { REF.q = e.target.value.slice(0, 60); refRefresh(); }
   if (e.target.dataset && e.target.dataset.t !== undefined) { const u = cur(); if (u && u.draft) u.draft[e.target.dataset.t] = e.target.value; }
   if (e.target.id === 'subname') { S.real = e.target.value.trim().slice(0, 60); save(); }
 });
